@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Concrezines </title>
+
+  <style>
+    :root{--bg:#121212;--card:#1e1e1e;--accent:#ff4444;--text:#fff}
+    *{box-sizing:border-box}
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    #headerImage img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #introText {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 20px;
+      text-align: justify;
+      font-size: 1.05rem;
+      line-height: 1.65rem;
+      color: var(--text);
+      display: block;
+    }
+
+    header {
+      padding: 20px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .topbar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding: 0 20px 10px 20px;
+      justify-content:center;
+      position: relative;
+    }
+
+    #backBtn {
+      display: none;
+      padding: 8px 14px;
+      background-color: var(--accent);
+      border: none;
+      color: white;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      cursor: pointer;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .controls{
+      display:none;
+      gap:8px;
+      align-items:center;
+      margin-left:auto;
+      margin-right:20px;
+    }
+
+    .btn{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.08);
+      color:var(--text);
+      padding:8px;
+      border-radius:8px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .item {
+      background-color: var(--card);
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+      text-align: center;
+    }
+
+    .item:hover { transform: translateY(-6px); }
+
+    .item img { width:100%; height:auto; border-radius:8px; display:block }
+
+    .age-label {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+
+    #viewer{
+      display:none;
+      flex-direction:column;
+      gap:20px;
+      padding:20px;
+      align-items:center;
+      overflow:auto;
+    }
+
+    .page{
+      width:100%;
+      max-width:900px;
+      border-radius:8px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.6);
+      overflow:hidden;
+      background:#f5f5f5;
+    }
+
+    .page img{
+      width:100%;
+      height:auto;
+      display:block;
+      transform-origin: top center;
+      transition: transform 0.15s ease;
+      background: #fff;
+    }
+
+    #backBottom{
+      margin: 40px auto;
+      padding: 10px 18px;
+      background: var(--accent);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      display:none;
+    }
+
+    #fullscreenViewer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: black;
+      z-index: 99999;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    #fullscreenViewer img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .fullscreen-nav {
+      position: absolute;
+      bottom: 25px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .fullscreen-btn {
+      background: rgba(255,255,255,0.18);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    #fullscreenIcon {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border:1px solid rgba(255,255,255,0.1);
+      cursor:pointer;
+      background:transparent;
+      color:white;
+    }
+
+  </style>
+</head>
+<body>
+
+<div id="headerImage">
+  <img src="Imagens/Concrezines.png" alt="Concrezines Header">
+</div>
+
+<p id="introText">
+  Bem-vindos ao Concrezines, uma página dedicada a levar a poesia concreta de forma gratuita.
+  O Concretismo é um movimento onde o poema se torna um objeto visual, utilizando a forma, o
+  espaço e a disposição gráfica das palavras para impactar o leitor. Para apresentar essa arte,
+  utilizamos o formato E-Zine (publicação digital independente e artística), construindo narrativas
+  curtas de 6 páginas onde poemas concretos se unem para transmitir sensações e contar histórias visuais.
+  Explore a diversidade de temas e aproveite o mergulho na poesia para ver e sentir!
+</p>
+
+<header>Boa Leitura:</header>
+
+<div class="topbar">
+  <button id="backBtn">Voltar</button>
+
+  <div class="controls" id="controls">
+    <button class="btn" id="zoomOut">-</button>
+    <div class="btn" id="zoomPct">100%</div>
+    <button class="btn" id="zoomIn">+</button>
+    <button class="btn" id="zoomReset">Reset</button>
+    <button id="fullscreenIcon">⛶</button>
+  </div>
+</div>
+
+<div id="home" class="grid">
+
+  <div class="item" onclick="openReader('Um dia fui feliz')">
+    <img src="Imagens/Um dia fui feliz/1.png">
+    <div class="age-label">Indicado para leitores maiores de 10 anos</div>
+  </div>
+
+  <div class="item" onclick="openReader('Na minha Janela')">
+    <img src="Imagens/Na minha Janela/1.png">
+    <div class="age-label">Indicado para leitores maiores de 10 anos</div>
+  </div>
+
+  <div class="item" onclick="openReader('Memórias')">
+    <img src="Imagens/Memórias/1.png">
+    <div class="age-label">Indicado para leitores maiores de 10 anos</div>
+  </div>
+
+  <div class="item" onclick="openReader('Estigma')">
+    <img src="Imagens/Estigma/1.png">
+    <div class="age-label">Indicado para leitores maiores de 14 anos</div>
+  </div>
+
+  <div class="item" onclick="openReader('Beleza')">
+    <img src="Imagens/Beleza/1.png">
+    <div class="age-label">Indicado para leitores maiores de 14 anos</div>
+  </div>
+
+  <div class="item" onclick="openReader('Toc Toque Toc')">
+    <img src="Imagens/Toc Toque Toc/1.png">
+    <div class="age-label">Indicado para leitores maiores de 16 anos</div>
+  </div>
+
+  <div class="item" onclick="openReader('Fusca')">
+    <img src="Imagens/Fusca/1.png">
+    <div class="age-label">Indicado para leitores maiores de 12 anos</div>
+  </div>
+
+  <div class="item" onclick="openReader('Tentando se encaixar')">
+    <img src="Imagens/Tentando se encaixar/1.png">
+    <div class="age-label">Indicado para leitores maiores de 16 anos</div>
+  </div>
+
+</div>
+
+<div id="viewer"></div>
+<button id="backBottom">Voltar</button>
+
+<div id="fullscreenViewer">
+  <img id="fullscreenImage">
+  <div class="fullscreen-nav">
+    <button class="fullscreen-btn" id="prevPage">⟨ Voltar</button>
+    <button class="fullscreen-btn" id="exitFullscreen">Sair</button>
+    <button class="fullscreen-btn" id="nextPage">Avançar ⟩</button>
+  </div>
+</div>
+
+<script>
+  const backBtn = document.getElementById('backBtn');
+  const backBottom = document.getElementById('backBottom');
+  const controls = document.getElementById('controls');
+  const zoomPct = document.getElementById('zoomPct');
+
+  const zoomInBtn = document.getElementById('zoomIn');
+  const zoomOutBtn = document.getElementById('zoomOut');
+  const zoomResetBtn = document.getElementById('zoomReset');
+  const fullscreenIcon = document.getElementById('fullscreenIcon');
+
+  let currentZoom = 1;
+  let currentFolderName = "";
+  let fullscreenIndex = 1;
+
+  function updateZoomUI(){ zoomPct.textContent = Math.round(currentZoom*100)+'%'; }
+
+  function applyZoom(){
+    document.querySelectorAll('#viewer .page img')
+    .forEach(img => img.style.transform = `scale(${currentZoom})`);
+  }
+
+  zoomInBtn.onclick = ()=>{ currentZoom+=0.1; updateZoomUI(); applyZoom(); };
+  zoomOutBtn.onclick = ()=>{ if(currentZoom>0.2){ currentZoom-=0.1; updateZoomUI(); applyZoom(); } };
+  zoomResetBtn.onclick = ()=>{ currentZoom=1; updateZoomUI(); applyZoom(); };
+
+  function openReader(folderName){
+    currentFolderName = folderName;
+
+    document.getElementById('headerImage').style.display = "none";
+    document.getElementById('introText').style.display = "none";
+
+    document.getElementById('home').style.display = 'none';
+    document.getElementById('viewer').style.display = 'flex';
+    backBtn.style.display = 'inline-block';
+    controls.style.display = 'flex';
+    backBottom.style.display = 'block';
+
+    const viewer = document.getElementById('viewer');
+    viewer.innerHTML = '';
+    
+    for(let i=1;i<=7;i++){
+      const page = document.createElement('div');
+      page.className='page';
+      const img = document.createElement('img');
+      img.src = `Imagens/${folderName}/${i}.png`;
+      page.appendChild(img);
+      viewer.appendChild(page);
+    }
+
+    currentZoom=1; updateZoomUI(); applyZoom();
+  }
+
+  backBtn.onclick = backBottom.onclick = ()=>{
+    document.getElementById('viewer').style.display='none';
+    controls.style.display='none';
+    backBtn.style.display='none';
+    backBottom.style.display='none';
+    document.getElementById('home').style.display='grid';
+
+    document.getElementById('headerImage').style.display = "block";
+    document.getElementById('introText').style.display = "block";
+  };
+
+  const fullDiv = document.getElementById("fullscreenViewer");
+  const fullImg = document.getElementById("fullscreenImage");
+
+  function enterFullscreen(){
+    if(!currentFolderName) return;
+    fullscreenIndex = 1;
+    fullImg.src = `Imagens/${currentFolderName}/1.png`;
+    fullDiv.style.display="flex";
+    document.documentElement.requestFullscreen?.();
+  }
+
+  function exitFullscreen(){
+    fullDiv.style.display="none";
+    document.exitFullscreen?.();
+  }
+
+  fullscreenIcon.onclick = enterFullscreen;
+  document.getElementById("exitFullscreen").onclick = exitFullscreen;
+
+  document.getElementById("nextPage").onclick = ()=>{
+    fullscreenIndex++;
+    fullImg.src = `Imagens/${currentFolderName}/${fullscreenIndex}.png`;
+  };
+
+  document.getElementById("prevPage").onclick = ()=>{
+    if(fullscreenIndex>1){
+      fullscreenIndex--;
+      fullImg.src = `Imagens/${currentFolderName}/${fullscreenIndex}.png`;
+    }
+  };
+</script>
+
+</body>
+</html>
